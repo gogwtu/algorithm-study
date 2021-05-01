@@ -314,6 +314,34 @@ int quick_sort(int *data, int size){
   return 0;
 }
 
+//桶排序:针对N个小于M的正整数,直接构建大小为M,初始数据为0的数组bucket[M]
+//然后遍历这N个数,对于每个数data[i],将bucket[data[i]]增1,
+//最后遍历bucket[]数组,如果数值为0就不打印,数值为x就打印x遍数组下标
+//因为数组下标中存放的是排序后的数值,而数组的值就是该数值的数量
+int bucket_sort(int *data, int size, int max_element){
+  int i, j;
+  int *bucket = (int *)malloc((max_element + 1) * sizeof(int));
+  memset(bucket, 0, (max_element + 1) * sizeof(int));
+
+  if (bucket == NULL){
+    printf("%s: error, out of memory\n", __FUNCTION__);
+    return -1;
+  }
+
+  for (i = 0; i < size; i++){
+    bucket[data[i]]++;
+  }
+
+  for (i = 0, j = 0; j <= max_element; j++){
+    while ((bucket[j]--) > 0){
+      data[i++] = j;
+    }
+  }
+  free(bucket);
+
+  return 0; 
+}
+
 int main(int argc, char *argv[]){
   char file_path[256];
   int *data;
@@ -344,7 +372,7 @@ int main(int argc, char *argv[]){
       case 'h'://help
       default:
         printf("./sorts -f file_path -s size -m sort_method [-h]\n");
-        printf("0-bubble_sort\n1-selection_sort\n2-insertion_sort\n3-shell_sort\n4-merge-sort\n5-heap-sort\n6-quick_sort\n");
+        printf("0-bubble_sort\n1-selection_sort\n2-insertion_sort\n3-shell_sort\n4-merge-sort\n5-heap-sort\n6-quick_sort\n7-bucket_sort\n");
         return 0;
     }
   }
@@ -353,9 +381,9 @@ int main(int argc, char *argv[]){
     printf("@%s: error, size=0\n", __FUNCTION__);
     return -1;
   }
-  if (m > 6){
+  if (m > 7){
     printf("sort_method includes:\n");
-    printf("0-bubble_sort\n1-selection_sort\n2-insertion_sort\n3-shell_sort\n4-merge-sort\n5-heap-sort\n6-quick_sort\n");
+    printf("0-bubble_sort\n1-selection_sort\n2-insertion_sort\n3-shell_sort\n4-merge-sort\n5-heap-sort\n6-quick_sort\n7-bucket_sort\n");
     return -1;
   }
 
@@ -391,6 +419,9 @@ int main(int argc, char *argv[]){
     case 6: //quick-sort
       printf("------------------------------------quick_sort result-----------------------------------\n");
       break;
+    case 7: //bucket-sort
+      printf("-----------------------------------bucket_sort result-----------------------------------\n");
+      break;
     default:
       break;
   }
@@ -420,6 +451,10 @@ int main(int argc, char *argv[]){
       break;
     case 6: //quick-sort
       quick_sort(data, size);
+      break;
+    case 7: //bucket-sort
+      //user should guarantee that the max data element is less than size
+      bucket_sort(data, size, size);
       break;
     default:
       break;
