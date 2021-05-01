@@ -5,6 +5,7 @@
 #include <time.h>
 #include "generate_data.h"
 
+//排序方法说明:
 //任何需要交换相邻两个元素的排序方法,其开销都是O(N^2)
 //要想在排序时间上获得突破,基本思路是交换相距较远的元素
 //这样也很好理解:交换相距较远的元素可以一次性消除更多的逆序对
@@ -141,8 +142,8 @@ static int merge_sort_recursive(int *data, int size, int *merged_c){
 }
 
 //归并排序:分冶+递归
-//基本思想是将一个待排序的数组分成两个需要排序的部分
-//然后各个部分分别排序,最后再对二者进行合并,将合并结果放到第三个地方
+//基本思想是将一个待排序的数组分成两个需要排序的部分,并对各个部分分别排序,
+//然后再对排序后的二者进行合并,将合并结果临时放到第三个地方
 int merge_sort(int *data, int size){
   int *tmp_result = (int *)malloc(size * sizeof(int));
   if (tmp_result == NULL){
@@ -206,18 +207,6 @@ int heap_sort(int *data, int size){
   }
   return 0;
 }
-
-//快速排序的思想,是对于一个数组,先确定一个枢纽元素,再把所有小于它的数都移到左边,大于它的都移到右边
-//采用三数值分割法确定枢纽元素,即以数组左,中,右三个点的值进行排序,大小中等的元素作为枢纽元素
-//三个排序的数中,按照由小到大的顺序,分别放在数组的left(最左边),right-1和right(数组最右边)的位置
-//然后使用两个游标i和j,其中i从left+1的位置开始向右移动,j从right-2(枢纽元素左边)的位置开始向左移动.
-//i一直向右移动,跳过比枢纽元素小的所有元素
-//j一直向左移动,跳过比枢纽元素大的所有元素
-//当二者无法移动时,就说明i处的元素大于(或等于)枢纽元素,j处的元素小于(或等于)枢纽元素,
-//于是将i和j处的元素交换
-//然后继续上述过程,直到i和j的位置交错,即i到了j的右边,而j到了i的左边
-//再将枢纽元素与i交换,这样枢纽元素的左边都是比它小的,右边都是比它大的
-//然后再对枢纽元素的左边和右边进行同样的操作,即递归地处理左边和右边即可
 
 //采用left,middle,right三数值分割法来确定枢纽元素
 //枢纽是left,right,(left+right)/2位置的中间大小元素
@@ -305,6 +294,17 @@ static int quick_sort_recursive(int *data, int left, int right){
   return 0;
 }
 
+//快速排序:对于一个数组,先确定一个枢纽元素,再把所有小于它的数都移到左边,大于它的都移到右边
+//采用三数值分割法确定枢纽元素,即以数组左,中,右三个点的值进行排序,大小中等的元素作为枢纽元素
+//三个排序的数中,按照由小到大的顺序,分别放在数组的left(最左边),right-1和right(数组最右边)的位置
+//然后使用两个游标i和j,其中i从left+1的位置开始向右移动,j从right-2(枢纽元素左边)的位置开始向左移动.
+//i一直向右移动,跳过比枢纽元素小的所有元素
+//j一直向左移动,跳过比枢纽元素大的所有元素
+//当二者无法移动时,就说明i处的元素大于(或等于)枢纽元素,j处的元素小于(或等于)枢纽元素,
+//于是将i和j处的元素交换
+//然后继续上述过程,直到i和j的位置交错,即i到了j的右边,而j到了i的左边
+//再将枢纽元素与i交换,这样枢纽元素的左边都是比它小的,右边都是比它大的
+//然后再对枢纽元素的左边和右边进行同样的操作,即递归地处理左边和右边即可
 int quick_sort(int *data, int size){
   if (size > 1){
     quick_sort_recursive(data, 0, size - 1);
@@ -340,6 +340,11 @@ int bucket_sort(int *data, int size, int max_element){
 
   return 0; 
 }
+
+//总结:
+//对于一般的内部排序(即所有数据都能够放进内存中),使用插入排序,希尔排序或者快速排序
+//堆排序比希尔排序慢,因为为了移动数据,堆排序要进行两人次比较
+//归并排序是外部排序的中心思想
 
 int main(int argc, char *argv[]){
   char file_path[256];
@@ -381,7 +386,7 @@ int main(int argc, char *argv[]){
     return -1;
   }
   if (m > 7){
-    printf("sort_method includes:\n");
+    printf("invalid sort_method, sort_method includes:\n");
     printf("0-bubble_sort\n1-selection_sort\n2-insertion_sort\n3-shell_sort\n4-merge-sort\n5-heap-sort\n6-quick_sort\n7-bucket_sort\n");
     return -1;
   }
@@ -459,7 +464,7 @@ int main(int argc, char *argv[]){
       break;
   }
 #ifdef MEASURE_TIME
-      clock_gettime(CLOCK_MONOTONIC, &time_end);
+  clock_gettime(CLOCK_MONOTONIC, &time_end);
 #endif
 
   //after: sorted data
@@ -467,7 +472,7 @@ int main(int argc, char *argv[]){
 
 #ifdef MEASURE_TIME
   elapsed_time = (time_end.tv_sec - time_start.tv_sec) * 1e9
-    + (time_end.tv_nsec - time_start.tv_nsec);
+      + (time_end.tv_nsec - time_start.tv_nsec);
   printf("------------------------------------total %lu ns-----------------------------------\n",
       elapsed_time);
 #endif
