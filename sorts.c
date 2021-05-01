@@ -193,7 +193,6 @@ int heap_sort(int *data, int size){
   for (position = size / 2; position >= 0; position--){
     percolate_down(data, size, position);
   }
-  //print_heap(data, size);
 
   //排序:每次移除根节点,然后将它存放到末尾
   //每次移除根元素后,堆的实际大小会减小1,这样堆的末尾就会空出一项出来,用它来存放被移除的根元素
@@ -206,7 +205,6 @@ int heap_sort(int *data, int size){
     //由于原始堆的末尾节点被放到根节点,需要再重新从它开始下滤以满足堆序特性
     percolate_down(data, position, 0);
   }
-  //print_heap(data, size);
   return 0;
 }
 
@@ -327,10 +325,11 @@ int main(int argc, char *argv[]){
   unsigned long elapsed_time;
 #endif
 
-  //f是待排序的数所在的文件路径,每个整数以空格隔开
-  //s是待排序的数的总个数(不能比文件中的数据数量大)
-  //m是排序算法
-  //h是帮助
+  //parse command line parameters
+  //-f: the file path containing all data to be sorted, each integer is separated by a space
+  //-s: the size of the data
+  //-m: choosing a sorting method
+  //-h: print help
   while ((opt = getopt(argc, argv, "f:s:m:h")) != -1){
     switch (opt){
       case 'f'://data source file
@@ -360,13 +359,13 @@ int main(int argc, char *argv[]){
     return -1;
   }
 
-  //从文件中读取所有数据到动态分配的数组中
+  //read all data to be sorted to a data array
   data = get_data_from_file(file_path, size);
   if (data == NULL){
     return -1;
   }
 
-  //before
+  //before: original data
   printf("+++++++++++++++++++++++++++++++++++++initial data+++++++++++++++++++++++++++++++++++++++\n");
   print_all_data(data, size);
 
@@ -429,7 +428,7 @@ int main(int argc, char *argv[]){
       clock_gettime(CLOCK_MONOTONIC, &time_end);
 #endif
 
-  //after
+  //after: sorted data
   print_all_data(data, size);
 
 #ifdef MEASURE_TIME

@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "generate_data.h"
 
-//从file_path的文件中读取size个元素到数组中并返回数组
+//read size elements from file_path and return a data array
 int *get_data_from_file(const char *file_path, int size){
   int *data = (int *)malloc(size * sizeof(int));
   FILE *fp;
@@ -14,12 +14,14 @@ int *get_data_from_file(const char *file_path, int size){
     return NULL;
   }
 
-  //先从文件中读取所有数据
+  //open the file
   fp = fopen(file_path, "r");
   if (fp == NULL){
     printf("@%s: error, cannot open file %s\n", __FUNCTION__, file_path);
     return NULL;
   }
+
+  //read file data into an array
   while ((fscanf(fp, "%d", &element) != EOF)
       && (i < size)){
     data[i++] = element;

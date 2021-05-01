@@ -5,8 +5,8 @@ file_path=$1
 data_size=$2
 
 echo "@file_path=$file_path,data_size=$data_size"
-#create empty-file
-echo -n " " > $file_path
+#create a empty-file
+touch $file_path
 i=1
 #fill file with random-numbers
 while [ $i -le $data_size ]
