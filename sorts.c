@@ -132,8 +132,7 @@ static int merge_sort_recursive(int *data, int size, int *merged_c){
     merge_sort_recursive(data, size / 2, merged_c);
     merge_sort_recursive(data + (size / 2), size - (size / 2), merged_c + (size / 2));
     merge(data, size, merged_c);
-    //将临时空间c中的内容拷贝到a和b中
-    //strncpy((char *)data, (char *)merged_c, size * sizeof(int));
+    //copy merged_c back to data[]
     for (i = 0; i < size; i++){
       data[i] = merged_c[i];
     }
