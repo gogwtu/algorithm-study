@@ -15,13 +15,12 @@ struct cstack_node {
 struct cstack {
   struct cstack_node *top;
   struct cstack_node *base;
-  struct cstack_node base_node;
 };
 
 struct cstack *cstack_create(){
   struct cstack *stackp = (struct cstack *)malloc(sizeof(struct cstack));
-  stackp->base = &(stackp->base_node);
-  stackp->top = &(stackp->base_node);
+  stackp->base = NULL;
+  stackp->top = NULL;
   return stackp;
 }
 
@@ -75,16 +74,18 @@ int *preorder_nonrecursive(struct tree_node *root, int *num_node){
     output_array = (int *)realloc(output_array,
         (*num_node) * sizeof(int));
     output_array[(*num_node) - 1] = root->val;
+    //将root入栈
+    cstack_push(tree_stack, root);
+
     if (root->left){
-      cstack_push(tree_stack, root);
       root = root->left;
     } else if (root->right){
-      cstack_push(tree_stack, root);
       root = root->right;
     } else {
 pop_stack:
-      //如果一个节点没有左子树和右子树
-      //那就不需要入栈
+      //如果一个节点没有左子树和右子树就出栈
+      root = cstack_pop(tree_stack);
+
       stack_top = cstack_top(tree_stack); 
       if (!stack_top){
         break;
@@ -99,12 +100,10 @@ pop_stack:
           //如果栈顶元素没有右孩子,那就说明该栈顶元素的所有子节点都已经
           //遍历完,而该元素自身本身也已经遍历过
           //于是将其弹出
-          root = cstack_pop(tree_stack);
           goto pop_stack;
         }
       } else if (root == stack_top->right){
         //栈顶的左右元素都已经处理完,弹出栈顶
-        root = cstack_pop(tree_stack);
         goto pop_stack;
       }
     }

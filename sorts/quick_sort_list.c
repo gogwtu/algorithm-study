@@ -86,41 +86,40 @@ struct list_node *quick_sort_list(struct list_node *head){
 }
 
 int main(int argc, char *argv[]){
-  struct list_node *list_head = NULL;
+  struct list_node dummy_head;
   struct list_node *node;
   struct list_node *prev_node;
   struct list_node *next_node;
   int size = 100; //data set size
   int i;
 
+  dummy_head.next = NULL;
+  prev_node = &dummy_head;
+
   for (i = 0; i < size; i++){
     node = (struct list_node *)malloc(sizeof(struct list_node));
     node->val = rand() % 100;
     node->next = NULL;
-    if (!list_head){
-      list_head = node;
-    } else {
-      prev_node->next = node;
-    }
+    prev_node->next = node;
     prev_node = node;
   }
 
-  printf("@original data:\n");
-  for (node = list_head; node != NULL; node = node->next){
+  printf("@original list data:\n");
+  for (node = dummy_head.next; node != NULL; node = node->next){
     printf("%d ", node->val);
   }
 
   printf("\n");
 
-  list_head = quick_sort_list(list_head);
+  dummy_head.next = quick_sort_list(dummy_head.next);
 
-  printf("@qsorted data:\n");
-  for (node = list_head; node != NULL; node = node->next){
+  printf("@qsorted list data:\n");
+  for (node = dummy_head.next; node != NULL; node = node->next){
     printf("%d ", node->val);
   }
   printf("\n");
 
-  for (node = list_head; node != NULL; ){
+  for (node = dummy_head.next; node != NULL; ){
     next_node = node->next;
     free(node);
     node = next_node;
